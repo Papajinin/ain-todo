@@ -19,9 +19,20 @@
       if (m === 'light' || m === 'dark') document.documentElement.setAttribute('data-theme', m);
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
+  <!-- 시작 화면 (앱을 새로 열 때만, 약 1.8초) -->
+  <div class="splash" id="splash" aria-hidden="true">
+    <div class="splash-mark">
+      <div class="splash-circle">
+        <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#0071E3"/><path class="splash-check" d="M20 33 L28.5 41.5 L44.5 24"/></svg>
+      </div>
+      <div class="wordmark splash-word"><b>AIN</b> Todo</div>
+      <div class="splash-dots"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
   <div class="app">
     <!-- 상단 헤더 -->
     <header class="top">
@@ -219,6 +230,6 @@
   <script src="drawer.js?v=1"></script>
   <script src="settings.js?v=2"></script>
   <script src="sync.js?v=1"></script>
-  <script src="main.js?v=5"></script>
+  <script src="main.js?v=6"></script>
 </body>
 </html>
