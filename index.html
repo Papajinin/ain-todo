@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <title>AIN Todo</title>
+  <script>
+    // 저장된 화면 모드를 먼저 적용해서 색이 깜빡이지 않게
+    try {
+      const m = JSON.parse(localStorage.getItem('ainTodo')).settings.theme;
+      if (m === 'light' || m === 'dark') document.documentElement.setAttribute('data-theme', m);
+    } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="style.css?v=10">
+</head>
+<body>
+  <div class="app">
+    <!-- 상단 헤더 -->
+    <header class="top">
+      <h1 class="wordmark"><b>AIN</b> Todo</h1>
+      <div class="top-right">
+        <button class="icon-btn" id="drawerBtn" type="button" aria-label="미완료 서랍">
+          <span class="icon-circle">
+            <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="badge" id="overdueBadge" hidden></span>
+          </span>
+        </button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="설정">
+          <span class="icon-circle">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <!-- D-Day 핀 -->
+    <div class="chips" id="chips" hidden></div>
+
+    <!-- 캘린더 -->
+    <section class="cal" id="cal">
+      <div class="cal-head">
+        <div class="cal-nav">
+          <button class="nav-btn" id="prevBtn" type="button" aria-label="이전">
+            <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <h2 class="month" id="monthTitle"></h2>
+          <button class="nav-btn" id="nextBtn" type="button" aria-label="다음">
+            <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <button class="today-btn" id="todayBtn" type="button" hidden>오늘</button>
+      </div>
+      <div class="cal-labels" id="calLabels"></div>
+      <div class="cal-body" id="calBody">
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <button class="handle-btn" id="handleBtn" type="button" aria-label="월간으로 펼치기">
+        <span class="handle"></span>
+      </button>
+    </section>
+
+    <!-- 선택한 날의 할 일 -->
+    <div class="day-head">
+      <h2 id="dayTitle"></h2>
+      <span id="dayCount"></span>
+    </div>
+    <main class="list" id="list"></main>
+
+    <!-- 새 할 일 버튼 -->
+    <div class="add-bar">
+      <button class="add-btn" id="addBtn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>새 할 일
+      </button>
+    </div>
+  </div>
+
+  <!-- 할 일 입력 창 (아래에서 올라옴) -->
+  <div class="overlay" id="sheetOverlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-top">
+        <button class="sheet-btn" id="sheetCancel" type="button">취소</button>
+        <h2 id="sheetTitle">새 할 일</h2>
+        <button class="sheet-btn strong" id="sheetSave" type="button">추가</button>
+      </div>
+      <div class="sheet-scroll">
+        <div class="group">
+          <input class="f-title" id="fTitle" type="text" placeholder="할 일" enterkeyhint="done" autocomplete="off" aria-label="할 일">
+          <textarea class="f-memo" id="fMemo" rows="1" placeholder="메모" aria-label="메모"></textarea>
+        </div>
+
+        <div class="group-label">카테고리</div>
+        <div class="cat-chips" id="catChips"></div>
+        <div class="group cat-new" id="catNew" hidden>
+          <div class="cat-new-row">
+            <input id="fCatName" type="text" placeholder="새 카테고리 이름" maxlength="10" enterkeyhint="done" autocomplete="off" aria-label="새 카테고리 이름">
+            <button class="small-btn" id="catAdd" type="button">추가</button>
+          </div>
+          <div class="color-dots" id="colorDots"></div>
+        </div>
+
+        <div class="group">
+          <label class="row" for="fDate"><span>날짜</span><input class="f-date" id="fDate" type="date"></label>
+          <div class="row"><span>반복</span>
+            <div class="seg" id="fRepeat">
+              <button type="button" data-v="none">안 함</button>
+              <button type="button" data-v="daily">매일</button>
+              <button type="button" data-v="weekly">매주</button>
+              <button type="button" data-v="monthly">매월</button>
+            </div>
+          </div>
+          <div class="row" id="rowDays" hidden><div class="weekdays" id="fDays"></div></div>
+          <label class="row" id="rowEnd" for="fEnd" hidden><span>종료일</span><input class="f-date" id="fEnd" type="date"></label>
+          <label class="row" for="fPin"><span>D-Day 고정</span><input class="switch" id="fPin" type="checkbox"></label>
+        </div>
+        <p class="f-error" id="fError" hidden></p>
+
+        <div class="group" id="deleteGroup" hidden>
+          <button class="row danger" id="sheetDelete" type="button">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 미완료 서랍 -->
+  <div class="overlay" id="drawerOverlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="sheet-top">
+        <span></span>
+        <h2 id="drawerTitle">미완료 할 일</h2>
+        <button class="sheet-btn strong" id="drawerClose" type="button">닫기</button>
+      </div>
+      <div class="sheet-scroll" id="drawerList"></div>
+    </div>
+  </div>
+
+  <!-- 설정 -->
+  <div class="overlay" id="settingsOverlay" hidden>
+    <div class="sheet tall" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="sheet-top">
+        <span></span>
+        <h2 id="settingsTitle">설정</h2>
+        <button class="sheet-btn strong" id="settingsClose" type="button">완료</button>
+      </div>
+      <div class="sheet-scroll">
+        <div class="group-label">화면 모드</div>
+        <div class="group"><div class="row"><div class="seg wide" id="sTheme">
+          <button type="button" data-v="light">라이트</button>
+          <button type="button" data-v="dark">다크</button>
+          <button type="button" data-v="auto">자동</button>
+        </div></div></div>
+
+        <div class="group-label">한 주의 시작</div>
+        <div class="group"><div class="row"><div class="seg wide" id="sWeek">
+          <button type="button" data-v="mon">월요일</button>
+          <button type="button" data-v="sun">일요일</button>
+        </div></div></div>
+
+        <div class="group-label">캘린더 기본 보기</div>
+        <div class="group"><div class="row"><div class="seg wide" id="sView">
+          <button type="button" data-v="week">주간</button>
+          <button type="button" data-v="month">월간</button>
+        </div></div></div>
+
+        <div class="group-label">카테고리</div>
+        <div class="group" id="sCats"></div>
+        <p class="hint">≡ 를 끌어서 순서를 바꿔요. 카테고리를 누르면 이름과 색을 바꿀 수 있어요.</p>
+
+        <div class="group-label">계정</div>
+        <div class="group">
+          <div class="row"><span>로그인</span><span class="row-value" id="accountEmail"></span></div>
+          <button class="row danger" id="logoutBtn" type="button">로그아웃</button>
+        </div>
+
+        <div class="group-label">데이터</div>
+        <div class="group">
+          <button class="row link" id="exportBtn" type="button">백업 파일 내보내기</button>
+        </div>
+        <p class="hint">할 일과 카테고리를 파일 하나로 저장해요.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 로그인 화면 -->
+  <div class="login" id="login" hidden>
+    <div class="login-box">
+      <h1 class="wordmark big"><b>AIN</b> Todo</h1>
+      <p class="login-sub">가족 계정으로 로그인해 주세요</p>
+      <button class="add-btn" id="loginBtn" type="button">Google로 로그인</button>
+      <p class="f-error login-error" id="loginError" hidden></p>
+    </div>
+  </div>
+
+  <!-- 선택 창 ("이 날만 / 이후 모두", 삭제 확인) -->
+  <div class="overlay" id="actionOverlay" hidden>
+    <div class="action-sheet">
+      <div class="action-group">
+        <p class="action-msg" id="actionMsg"></p>
+        <div id="actionBtns"></div>
+      </div>
+      <button class="action-cancel" id="actionCancel" type="button">취소</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="app.js?v=3"></script>
+  <script src="calendar.js?v=2"></script>
+  <script src="tasks.js?v=3"></script>
+  <script src="sheet.js?v=3"></script>
+  <script src="drawer.js?v=1"></script>
+  <script src="settings.js?v=2"></script>
+  <script src="sync.js?v=1"></script>
+  <script src="main.js?v=5"></script>
+</body>
+</html>
