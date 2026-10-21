@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v13 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v14 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -78,13 +78,13 @@
    - 버튼·선택한 날짜·체크·스위치는 --primary, 흰 바탕 위 작은 글씨·아이콘은 --primary-text
    - 그린 버튼의 흰 글씨는 대비 2.66으로 기준(4.5)보다 낮음: 사용자가 고른 색이라 예외 (디자인 가이드 참고) */
 :root[data-accent="green"] { --primary: #00B74F; --primary-text: #007B33; }
-:root[data-accent="red"] { --primary: #D31E3D; --primary-text: #C50031; }
+:root[data-accent="red"] { --primary: #D31E3D; --primary-text: #D31E3D; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"])[data-accent="green"] { --primary-text: #00B74F; }
-  :root:not([data-theme="light"])[data-accent="red"] { --primary-text: #FF7076; }
+  :root:not([data-theme="light"])[data-accent="red"] { --primary-text: #FF4048; }
 }
 :root[data-theme="dark"][data-accent="green"] { --primary-text: #00B74F; }
-:root[data-theme="dark"][data-accent="red"] { --primary-text: #FF7076; }
+:root[data-theme="dark"][data-accent="red"] { --primary-text: #FF4048; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
