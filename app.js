@@ -1,4 +1,4 @@
-// AIN Todo 공통 v3: 날짜 도우미, 저장소, 상태, 화면 모드
+// AIN Todo 공통 v4: 날짜 도우미, 저장소, 상태, 화면 모드
 
 const STORE_KEY = 'ainTodo';
 const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -77,16 +77,11 @@ function saveState() {
 }
 
 // 화면 모드: '자동'이면 아이폰 설정을 따름
-const THEME_BG = { light: '#F2F2F7', dark: '#000000' };
 function applyTheme() {
   const mode = state.settings.theme;
   const root = document.documentElement;
   if (mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
   else root.removeAttribute('data-theme');
-  document.querySelectorAll('meta[name="theme-color"]').forEach(m => {
-    const own = m.media.includes('dark') ? THEME_BG.dark : THEME_BG.light;
-    m.content = THEME_BG[mode] || own;
-  });
 }
 
 // 아직 하지 않았고, 넘기지도 않은 지난 할 일
