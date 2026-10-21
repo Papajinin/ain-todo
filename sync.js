@@ -1,4 +1,4 @@
-// AIN Todo 클라우드 v1: 구글 로그인 + 실시간 동기화 (Firebase Auth + Firestore)
+// AIN Todo 클라우드 v2: 구글 로그인 + 실시간 동기화 (Firebase Auth + Firestore)
 //  - 클라우드 위치: users/{uid} 문서(카테고리, 설정) + users/{uid}/tasks/{할 일 id} 문서 하나씩
 //  - 할 일을 하나씩 따로 저장해서, 폰과 PC에서 서로 다른 할 일을 고쳐도 덮어쓰지 않음
 //  - 다른 기기에서 바꾸면 onSnapshot으로 바로 받아서 화면을 다시 그림
@@ -147,6 +147,7 @@ function onUserSnap(snap) {
     LOCAL_ONLY_SETTINGS.forEach(k => { local[k] = state.settings[k]; });
     state.settings = { ...state.settings, ...(d.settings || {}), ...local };
     cloud.shadowUser = stableStringify(userPayload());
+    applyTheme(); // 다른 기기에서 테마 색을 바꿨으면 바로 반영
   }
   cloud.gotUser = true;
   afterSnapshot();

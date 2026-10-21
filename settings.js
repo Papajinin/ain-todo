@@ -1,4 +1,4 @@
-// AIN Todo 설정 v2: 화면 모드, 한 주의 시작, 캘린더 기본 보기, 카테고리 관리, 계정, 백업 내보내기
+// AIN Todo 설정 v3: 화면 모드, 테마 색, 한 주의 시작, 캘린더 기본 보기, 카테고리 관리, 계정, 백업 내보내기
 
 const settingsOverlay = document.getElementById('settingsOverlay');
 const sCats = document.getElementById('sCats');
@@ -8,7 +8,7 @@ let openCatId = null; // 이름·색을 고치는 중인 카테고리
 
 function renderSettings() {
   const s = state.settings;
-  [['sTheme', s.theme], ['sWeek', s.weekStart], ['sView', s.calendarView]].forEach(([id, v]) => {
+  [['sTheme', s.theme], ['sAccent', s.accent || 'blue'], ['sWeek', s.weekStart], ['sView', s.calendarView]].forEach(([id, v]) => {
     document.getElementById(id).querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   });
   document.getElementById('accountEmail').textContent = (cloud.user && cloud.user.email) || '';
@@ -48,7 +48,7 @@ function openSettings() {
 function setSetting(key, value) {
   state.settings[key] = value;
   saveState();
-  if (key === 'theme') applyTheme();
+  if (key === 'theme' || key === 'accent') applyTheme();
   if (key === 'calendarView') ui.expanded = value === 'month'; // 바로 보여 주기
   renderSettings();
   renderAll();
@@ -56,6 +56,9 @@ function setSetting(key, value) {
 
 document.getElementById('sTheme').addEventListener('click', e => {
   const b = e.target.closest('button'); if (b) setSetting('theme', b.dataset.v);
+});
+document.getElementById('sAccent').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (b) setSetting('accent', b.dataset.v);
 });
 document.getElementById('sWeek').addEventListener('click', e => {
   const b = e.target.closest('button'); if (b) setSetting('weekStart', b.dataset.v);

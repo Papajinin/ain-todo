@@ -1,4 +1,4 @@
-// AIN Todo 공통 v4: 날짜 도우미, 저장소, 상태, 화면 모드
+// AIN Todo 공통 v5: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
 
 const STORE_KEY = 'ainTodo';
 const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -34,8 +34,8 @@ const DEFAULT_CATEGORIES = [
 let state = {
   categories: DEFAULT_CATEGORIES,
   tasks: [],
-  // theme: light | dark | auto, calendarView: week | month
-  settings: { weekStart: 'mon', theme: 'auto', calendarView: 'week' }
+  // theme: light | dark | auto (기기마다), accent: blue | green | red (계정마다), calendarView: week | month
+  settings: { weekStart: 'mon', theme: 'auto', accent: 'blue', calendarView: 'week' }
 };
 
 // 저장하지 않는 화면 상태
@@ -76,12 +76,14 @@ function saveState() {
   if (typeof cloudSave === 'function') cloudSave();
 }
 
-// 화면 모드: '자동'이면 아이폰 설정을 따름
+// 화면 모드('자동'이면 아이폰 설정을 따름)와 테마 색
 function applyTheme() {
-  const mode = state.settings.theme;
+  const { theme: mode, accent } = state.settings;
   const root = document.documentElement;
   if (mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
   else root.removeAttribute('data-theme');
+  if (accent === 'green' || accent === 'red') root.setAttribute('data-accent', accent);
+  else root.removeAttribute('data-accent');
 }
 
 // 아직 하지 않았고, 넘기지도 않은 지난 할 일
