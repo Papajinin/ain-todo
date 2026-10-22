@@ -192,10 +192,56 @@ calEl.addEventListener('touchcancel', () => {
 });
 
 calGrid.addEventListener('click', e => {
-  if (sliding || Date.now() - swipedAt < 400) return;
+  if (sliding || Date.now() - swipedAt < 400 || Date.now() - longPressedAt < 600) return;
   const btn = e.target.closest('.day');
-  if (btn) selectDate(btn.dataset.date);
+  if (!btn) return;
+  // PC: 같은 날짜를 두 번 빠르게 누르면 그 날짜로 새 할 일
+  const now = Date.now();
+  if (isPointerFine && lastDayClick && lastDayClick.date === btn.dataset.date && now - lastDayClick.time < 400) {
+    lastDayClick = null;
+    openSheet();
+    return;
+  }
+  lastDayClick = { date: btn.dataset.date, time: now };
+  selectDate(btn.dataset.date);
 });
+
+// ---------- 날짜 길게 누르기 (0.5초) → 그 날짜로 새 할 일 ----------
+let dayPress = null;
+let lastDayClick = null;
+
+function cancelDayPress() {
+  if (!dayPress) return;
+  clearTimeout(dayPress.timer);
+  dayPress.btn.classList.remove('pressing');
+  dayPress = null;
+}
+
+calGrid.addEventListener('pointerdown', e => {
+  const btn = e.target.closest('.day');
+  if (!btn || e.button > 0 || sliding) return;
+  cancelDayPress();
+  btn.classList.add('pressing');
+  dayPress = {
+    btn, x: e.clientX, y: e.clientY,
+    timer: setTimeout(() => {
+      const date = btn.dataset.date;
+      cancelDayPress();
+      longPressedAt = Date.now();
+      selectDate(date);
+      openSheet();
+    }, 500)
+  };
+});
+
+// 넘기거나 펼치려고 움직이면 취소
+calGrid.addEventListener('pointermove', e => {
+  if (dayPress && Math.hypot(e.clientX - dayPress.x, e.clientY - dayPress.y) > 10) cancelDayPress();
+});
+calGrid.addEventListener('pointerup', cancelDayPress);
+calGrid.addEventListener('pointercancel', cancelDayPress);
+calGrid.addEventListener('pointerleave', cancelDayPress);
+calGrid.addEventListener('contextmenu', e => { if (e.target.closest('.day')) e.preventDefault(); });
 
 handleBtn.addEventListener('click', () => {
   if (Date.now() - swipedAt < 400) return;

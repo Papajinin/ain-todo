@@ -164,7 +164,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 .cal-grid { grid-auto-rows: var(--row-h); transition: transform .28s ease; }
 .cal.no-anim .cal-body, .cal.no-anim .cal-grid { transition: none; }
 
-.day { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.day { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 .day .num {
   width: 30px; height: 30px; border-radius: 15px;
   display: grid; place-items: center;
@@ -172,6 +172,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 }
 .day.out .num { color: var(--sub); }
 .day.today .num { color: var(--primary-text); font-weight: 600; }
+.day.pressing .num { background: var(--fill); }
 .day.sel .num { background: var(--primary); color: var(--on-primary); font-weight: 600; }
 .dots { display: flex; gap: 3px; height: 5px; }
 .dot { width: 5px; height: 5px; border-radius: 3px; }
