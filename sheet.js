@@ -1,4 +1,4 @@
-// AIN Todo 입력 창 v3: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복
+// AIN Todo 입력 창 v4: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복, 할 일 자동완성
 
 const COLOR_KEYS = ['blue', 'green', 'orange', 'red', 'purple', 'pink', 'teal', 'brown'];
 
@@ -6,6 +6,7 @@ const sheetOverlay = document.getElementById('sheetOverlay');
 const sheetTitle = document.getElementById('sheetTitle');
 const sheetSave = document.getElementById('sheetSave');
 const fTitle = document.getElementById('fTitle');
+const titleSuggest = document.getElementById('titleSuggest');
 const fMemo = document.getElementById('fMemo');
 const catChips = document.getElementById('catChips');
 const catNew = document.getElementById('catNew');
@@ -27,6 +28,7 @@ const actionBtns = document.getElementById('actionBtns');
 let form = null;      // 입력 중인 값
 let original = null;  // 수정 중인 할 일 (새로 만들 때는 null)
 let newCatColor = 'blue';
+let titleIndex = []; // 지난 할 일 이름: [{ title, count, last(가장 최근 할 일) }] 많이 쓴 순
 
 // ---------- 반복 날짜 만들기 (종료일까지만) ----------
 function repeatDates(start, rule) {
@@ -79,6 +81,8 @@ function openSheet(taskId) {
   deleteGroup.hidden = !t;
   catNew.hidden = true;
   showError('');
+  buildTitleIndex();
+  hideSuggest();
   renderForm();
 
   sheetOverlay.hidden = false;
@@ -137,6 +141,59 @@ function showError(msg) {
   fError.textContent = msg;
   fError.hidden = !msg;
 }
+
+// ---------- 할 일 자동완성 (AIN Cost와 같은 방식) ----------
+// 창을 열 때 한 번 모아 둠. 반복 할 일은 한 번 만들 때 여러 개가 생기므로 묶음 하나를 1번으로 셈
+function buildTitleIndex() {
+  const map = new Map();
+  state.tasks.forEach(t => {
+    const title = (t.title || '').trim();
+    if (!title) return;
+    let e = map.get(title);
+    if (!e) map.set(title, e = { title, count: 0, series: new Set(), last: t });
+    if (!t.seriesId) e.count++;
+    else if (!e.series.has(t.seriesId)) { e.series.add(t.seriesId); e.count++; }
+    if (t.date >= e.last.date) e.last = t;
+  });
+  titleIndex = [...map.values()].sort((a, b) => b.count - a.count || (b.last.date > a.last.date ? 1 : -1));
+}
+
+function hideSuggest() {
+  titleSuggest.hidden = true;
+  titleSuggest.innerHTML = '';
+}
+
+// 친 글자가 들어간 이름을 최대 8개 (똑같이 적었으면 보이지 않음)
+function renderSuggest() {
+  const q = fTitle.value.trim();
+  const hits = q ? titleIndex.filter(e => e.title !== q && e.title.includes(q)).slice(0, 8) : [];
+  if (!hits.length) return hideSuggest();
+  titleSuggest.innerHTML = hits.map((e, i) => {
+    const at = e.title.indexOf(q);
+    const name = escapeHtml(e.title.slice(0, at)) + '<mark>' + escapeHtml(q) + '</mark>' + escapeHtml(e.title.slice(at + q.length));
+    return `<button class="sg" type="button" data-i="${i}"><span>${name}</span><small>${e.count}</small></button>`;
+  }).join('');
+  titleSuggest.hits = hits;
+  titleSuggest.hidden = false;
+  titleSuggest.scrollLeft = 0;
+}
+
+fTitle.addEventListener('input', renderSuggest);
+fTitle.addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== fTitle) hideSuggest(); }, 150));
+// 추천을 누를 때 할 일 칸의 키보드가 내려가지 않게
+titleSuggest.addEventListener('pointerdown', e => { if (e.target.closest('.sg')) e.preventDefault(); });
+titleSuggest.addEventListener('click', e => {
+  const b = e.target.closest('.sg');
+  if (!b) return;
+  const pick = titleSuggest.hits[Number(b.dataset.i)];
+  fTitle.value = pick.title;
+  hideSuggest();
+  // 새로 만들 때만: 그 이름을 가장 최근에 쓴 할 일의 카테고리를 미리 골라 둠 (바꿀 수 있음). 날짜·반복은 그대로
+  if (!original && state.categories.some(c => c.id === pick.last.categoryId)) {
+    form.categoryId = pick.last.categoryId;
+    renderCatChips();
+  }
+});
 
 // ---------- 입력 반응 ----------
 fMemo.addEventListener('input', autoGrow);
