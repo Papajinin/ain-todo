@@ -1,6 +1,6 @@
 // AIN Todo 입력 창 v4: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복, 할 일 자동완성
 
-const COLOR_KEYS = ['blue', 'green', 'orange', 'red', 'purple', 'pink', 'teal', 'brown'];
+const COLOR_KEYS = ['blue', 'green', 'red', 'brown', 'purple', 'orange', 'teal', 'pink']; // brown = 노랑
 
 const sheetOverlay = document.getElementById('sheetOverlay');
 const sheetTitle = document.getElementById('sheetTitle');
