@@ -1,4 +1,4 @@
-// AIN Todo 클라우드 v2: 구글 로그인 + 실시간 동기화 (Firebase Auth + Firestore)
+// AIN Todo 클라우드 v3: 구글 로그인 + 실시간 동기화 (Firebase Auth + Firestore)
 //  - 클라우드 위치: users/{uid} 문서(카테고리, 설정) + users/{uid}/tasks/{할 일 id} 문서 하나씩
 //  - 할 일을 하나씩 따로 저장해서, 폰과 PC에서 서로 다른 할 일을 고쳐도 덮어쓰지 않음
 //  - 다른 기기에서 바꾸면 onSnapshot으로 바로 받아서 화면을 다시 그림
@@ -154,6 +154,8 @@ function onUserSnap(snap) {
 }
 
 function onTasksSnap(snap) {
+  // 이 기기에서 방금 저장한 내용이 되돌아온 것이면 화면은 다시 그리지 않음 (체크 애니메이션이 끊기지 않게)
+  const echo = cloud.ready && snap.metadata.hasPendingWrites;
   const tasks = [];
   cloud.shadowTasks = new Map();
   snap.forEach(doc => {
@@ -163,13 +165,13 @@ function onTasksSnap(snap) {
   });
   state.tasks = tasks;
   cloud.gotTasks = true;
-  afterSnapshot();
+  afterSnapshot(echo);
 }
 
-function afterSnapshot() {
+function afterSnapshot(echo) {
   if (cloud.gotUser && cloud.gotTasks) cloud.ready = true;
   saveLocal();
-  refreshViews();
+  if (!echo) refreshViews();
 }
 
 // 다른 기기에서 바뀐 내용을 화면에 반영 (입력 중인 곳은 건드리지 않음)
