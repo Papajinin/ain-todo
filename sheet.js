@@ -1,4 +1,4 @@
-// AIN Todo 입력 창 v4: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복, 할 일 자동완성
+// AIN Todo 입력 창 v5: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복, 할 일 자동완성
 
 const COLOR_KEYS = ['blue', 'green', 'red', 'brown', 'purple', 'orange', 'teal', 'pink']; // brown = 노랑
 
@@ -88,8 +88,18 @@ function openSheet(taskId) {
   sheetOverlay.hidden = false;
   document.body.classList.add('locked');
   autoGrow();
-  if (!t) fTitle.focus(); // 새로 만들 때만 바로 키보드
+  if (!t) { fTitle.focus(); settleCaret(fTitle); } // 새로 만들 때만 바로 키보드
   requestAnimationFrame(() => sheetOverlay.classList.add('show'));
+}
+
+// 아이폰 Safari: 올라오는 중인 칸에 커서를 넣으면 깜빡이는 커서가 처음 자리(창 뒤)에 남을 때가 있어서,
+// 창이 다 올라온 뒤 커서 위치를 한 번 더 잡아 줌 (키보드는 누르는 순간 넣어야 열리므로 그때 한 번, 지금 한 번)
+function settleCaret(el) {
+  setTimeout(() => {
+    if (document.activeElement !== el) return;
+    const n = el.value.length;
+    try { el.setSelectionRange(n, n); } catch (e) {}
+  }, 320);
 }
 
 function closeSheet() {
