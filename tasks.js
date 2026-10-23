@@ -1,4 +1,4 @@
-// AIN Todo 할 일 목록 v3: 완료 체크, 메모 펼치기, PC 더블클릭 수정, 길게 눌러 수정 창 열기, 넘긴 할 일 표시
+// AIN Todo 할 일 목록 v4: 완료 체크(체크 애니메이션), 메모 펼치기, PC 더블클릭 수정, 길게 눌러 수정 창 열기, 넘긴 할 일 표시
 
 const listEl = document.getElementById('list');
 const dayTitle = document.getElementById('dayTitle');
@@ -8,6 +8,7 @@ const dayCount = document.getElementById('dayCount');
 const isPointerFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 const CHECK_SVG = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+let popTaskId = null; // 방금 완료한 할 일 (체크 애니메이션은 한 번만)
 const MEMO_SVG = '<svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>';
 
 function renderList() {
@@ -30,7 +31,7 @@ function renderList() {
       : `<span class="t-text">${escapeHtml(t.title)}</span>`;
     const skipped = t.skipped && !t.done;
     return `<div class="task${t.done ? ' done' : ''}${skipped ? ' skipped' : ''}" data-id="${t.id}">
-      <button class="check-btn" type="button" aria-label="${t.done ? '완료 취소' : '완료'}"><span class="check">${t.done ? CHECK_SVG : ''}</span></button>
+      <button class="check-btn" type="button" aria-label="${t.done ? '완료 취소' : '완료'}"><span class="check${t.done && t.id === popTaskId ? ' pop' : ''}">${t.done ? CHECK_SVG : ''}</span></button>
       <span class="t-dot" style="background:${catColor(t.categoryId)}"></span>
       <div class="t-body">${text}${skipped ? '<span class="skip-tag">넘김</span>' : ''}${t.memo ? `<span class="memo-ic">${MEMO_SVG}</span>` : ''}</div>
     </div>${open ? `<div class="memo">${escapeHtml(t.memo)}</div>` : ''}`;
@@ -52,8 +53,10 @@ function toggleDone(id) {
   if (!t) return;
   t.done = !t.done;
   if (t.done) delete t.skipped; // 넘겼던 할 일도 하면 완료로
+  popTaskId = t.done ? id : null;
   saveState();
   renderAll();
+  popTaskId = null;
 }
 
 function toggleMemo(id) {

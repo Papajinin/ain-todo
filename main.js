@@ -1,4 +1,4 @@
-// AIN Todo 시작 v6: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
+// AIN Todo 시작 v7: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
 
 const monthTitle = document.getElementById('monthTitle');
 const todayBtn = document.getElementById('todayBtn');
@@ -93,16 +93,23 @@ document.addEventListener('visibilitychange', () => {
   renderAll();
 });
 
-// 시작 화면: 애니메이션(약 1.5초)이 끝나면 잠깐 두었다가 사라짐
-// (Firebase를 받느라 늦게 시작돼도, 페이지를 연 때부터 1.8초를 넘기지 않게)
-setTimeout(() => {
+// 시작 화면: 첫 화면을 다 그린 뒤에 움직이기 시작 → 약 1.8초 움직이고 잠깐 두었다가 사라짐 (세 앱 공통)
+let splashStarted = false;
+function startSplash() {
+  if (splashStarted) return;
+  splashStarted = true;
   const splash = document.getElementById('splash');
-  splash.classList.add('hide');
-  setTimeout(() => splash.remove(), 400);
-}, Math.max(1800 - performance.now(), 200));
+  splash.classList.add('go');
+  setTimeout(() => {
+    splash.classList.add('hide');
+    setTimeout(() => splash.remove(), 400);
+  }, 2000);
+}
 
 loadState(); // 기기에 저장된 내용으로 먼저 보여 주고, 클라우드에서 최신 내용을 받으면 다시 그림
 applyTheme();
 ui.expanded = state.settings.calendarView === 'month';
 renderAll();
 initCloud();
+requestAnimationFrame(() => requestAnimationFrame(startSplash)); // 첫 화면이 그려진 다음 장면부터
+setTimeout(startSplash, 1000); // 화면 그리기 신호가 오지 않는 경우(백그라운드에서 열림 등) 대비
