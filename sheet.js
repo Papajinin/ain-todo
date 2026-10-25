@@ -1,4 +1,4 @@
-// AIN Todo 입력 창 v6: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복, 할 일 자동완성
+// AIN Todo 입력 창 v7: 할 일 추가·수정·삭제, 카테고리 바로 만들기, 기한 있는 반복, 할 일 자동완성
 
 const COLOR_KEYS = ['blue', 'green', 'red', 'brown', 'purple', 'orange', 'teal', 'pink']; // brown = 노랑
 
@@ -428,7 +428,7 @@ function showActions(msg, list) {
 
 function hideActions() {
   actionOverlay.classList.remove('show');
-  setTimeout(() => { if (!actionOverlay.classList.contains('show')) actionOverlay.hidden = true; }, 260);
+  setTimeout(() => { if (!actionOverlay.classList.contains('show')) actionOverlay.hidden = true; }, 380);
 }
 
 actionBtns.addEventListener('click', e => {

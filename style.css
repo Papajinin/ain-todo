@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v16 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v17 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -24,6 +24,9 @@
   --c-brown: #E5B800; /* brown 이름표 = 노랑 (예전 기록과 호환). 라이트 초록·노랑은 사용자가 밝게 고른 색 (가이드 예외) */
 
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", sans-serif;
+  --ease: cubic-bezier(.22, .61, .36, 1); /* 움직임: 처음엔 빠르게, 끝에서 천천히 멈춤 (네 앱 공통) */
+  --t: .35s; /* 이 앱의 모든 움직임 속도 */
+  --t-press: .1s; /* 누르는 순간만 바로 반응 */
   --row-h: 46px;
   color-scheme: light;
 }
@@ -140,9 +143,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
   background: var(--card); border-radius: 14px; padding: 5px 11px;
   font-size: 13px; white-space: nowrap;
   -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
-  transition: background-color .15s;
+  transition: background-color var(--t) var(--ease);
 }
-.chip.pressing { background: var(--fill); }
+.chip.pressing { background: var(--fill); transition-duration: var(--t-press); }
 .chip b { color: var(--primary-text); font-weight: 700; font-variant-numeric: tabular-nums; }
 
 /* ---------- 캘린더 ---------- */
@@ -160,8 +163,8 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 .cal-labels, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
 .cal-labels { text-align: center; font-size: 13px; font-weight: 500; line-height: 18px; color: var(--sub); padding-bottom: 2px; }
 .cal-labels .sun { color: var(--c-red); }
-.cal-body { height: var(--row-h); overflow: hidden; transition: height .28s ease; }
-.cal-grid { grid-auto-rows: var(--row-h); transition: transform .28s ease; }
+.cal-body { height: var(--row-h); overflow: hidden; transition: height var(--t) var(--ease); }
+.cal-grid { grid-auto-rows: var(--row-h); transition: transform var(--t) var(--ease); }
 .cal.no-anim .cal-body, .cal.no-anim .cal-grid { transition: none; }
 
 .day { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
@@ -191,9 +194,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 .task {
   display: flex; align-items: flex-start; gap: 4px; padding: 0 14px 0 3px;
   -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
-  transition: background-color .15s;
+  transition: background-color var(--t) var(--ease);
 }
-.task.pressing { background: var(--fill); }
+.task.pressing { background: var(--fill); transition-duration: var(--t-press); }
 .task + .task, .memo + .task { border-top: 0.5px solid var(--line); }
 .check-btn { flex: none; width: 44px; height: 44px; display: grid; place-items: center; }
 .check {
@@ -239,7 +242,7 @@ body.locked { overflow: hidden; }
 .overlay {
   position: fixed; inset: 0; z-index: 30;
   background: rgba(0, 0, 0, 0.4);
-  opacity: 0; transition: opacity .25s;
+  opacity: 0; transition: opacity var(--t) var(--ease);
 }
 .overlay.show { opacity: 1; }
 .sheet {
@@ -248,7 +251,7 @@ body.locked { overflow: hidden; }
   max-height: calc(100% - var(--kb, 0px) - 40px - env(safe-area-inset-top, 0px));
   display: flex; flex-direction: column;
   background: var(--bg); border-radius: 14px 14px 0 0;
-  transform: translateY(100%); transition: transform .3s ease;
+  transform: translateY(100%); transition: transform var(--t) var(--ease);
 }
 .overlay.show .sheet { transform: none; }
 .sheet-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 6px 8px; }
@@ -324,12 +327,12 @@ body.locked { overflow: hidden; }
 .switch {
   -webkit-appearance: none; appearance: none; flex: none; margin: 0;
   position: relative; width: 51px; height: 31px; border-radius: 16px;
-  background: var(--line); cursor: pointer; transition: background-color .2s;
+  background: var(--line); cursor: pointer; transition: background-color var(--t) var(--ease);
 }
 .switch::after {
   content: ""; position: absolute; top: 2px; left: 2px;
   width: 27px; height: 27px; border-radius: 14px; background: #FFFFFF;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); transition: transform .2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); transition: transform var(--t) var(--ease);
 }
 .switch:checked { background: var(--primary); }
 .switch:checked::after { transform: translateX(20px); }
@@ -361,7 +364,7 @@ body.locked { overflow: hidden; }
 .seg .sw { display: inline-block; width: 10px; height: 10px; border-radius: 5px; margin-right: 6px; vertical-align: 0; }
 .hint { margin: -6px 4px 0; font-size: 13px; color: var(--sub); }
 .row.link { width: 100%; justify-content: flex-start; color: var(--primary-text); }
-.cat-row { background: var(--card); position: relative; transition: transform .15s; }
+.cat-row { background: var(--card); position: relative; transition: transform var(--t) var(--ease); }
 .cat-row + .cat-row, .cat-row + .add-cat { border-top: 0.5px solid var(--line); }
 .cat-row.dragging { z-index: 1; transition: none; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18); }
 .cat-line { display: flex; align-items: center; }
@@ -439,7 +442,7 @@ body.locked { overflow: hidden; }
   max-width: 480px; margin: 0 auto;
   padding: 0 8px calc(8px + env(safe-area-inset-bottom, 0px));
   display: flex; flex-direction: column; gap: 8px;
-  transform: translateY(100%); transition: transform .25s ease;
+  transform: translateY(100%); transition: transform var(--t) var(--ease);
 }
 .overlay.show .action-sheet { transform: none; }
 .action-group, .action-cancel { background: var(--card); border-radius: 14px; overflow: hidden; }
@@ -452,5 +455,23 @@ body.locked { overflow: hidden; }
 .action-cancel { font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cal-body, .cal-grid, .overlay, .sheet, .action-sheet { transition: none; }
+  .cal-body, .cal-grid, .overlay, .sheet, .action-sheet, .chip, .task, .switch, .switch::after, .cat-row { transition: none; }
+}
+
+/* ---------- 움직임 (Line·Todo·Cost·Days 공통 방식) ----------
+   앱 안의 움직임은 모두 --t 한 가지 속도. 누르는 순간만 --t-press로 바로, 손을 떼면 --t로 천천히 돌아옴
+   따로 두는 것: 체크할 때 통 튀기, 시작 화면, 손가락으로 밀어 넘기기 */
+.icon-btn, .nav-btn, .today-btn, .add-btn, .sheet-btn, .small-btn { transition: transform var(--t) var(--ease); }
+.icon-btn:active:not(:disabled), .nav-btn:active:not(:disabled), .today-btn:active:not(:disabled), .add-btn:active:not(:disabled), .sheet-btn:active:not(:disabled), .small-btn:active:not(:disabled) { transform: scale(.95); transition-duration: var(--t-press); }
+/* 선택 버튼 묶음: 고른 칸 표시(.seg-thumb)가 옆으로 미끄러짐 — app.js의 placeSegThumb */
+.seg.has-thumb { position: relative; }
+.seg.has-thumb > button { position: relative; z-index: 1; }
+.seg.has-thumb > button.on { background: none; box-shadow: none; }
+.seg-thumb {
+  position: absolute; top: 2px; bottom: 2px; left: 0; border-radius: 7px;
+  background: var(--seg-active); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform var(--t) var(--ease), width var(--t) var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon-btn, .nav-btn, .today-btn, .add-btn, .sheet-btn, .small-btn, .seg-thumb { transition: none; }
 }
