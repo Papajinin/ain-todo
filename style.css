@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v19 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v20 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -400,6 +400,12 @@ body.locked { overflow: hidden; }
 .wordmark.big { font-size: 32px; }
 .login-sub { margin: 0 0 20px; font-size: 15px; color: var(--sub); }
 .login-error { margin: 4px 0 0; text-align: center; }
+/* 잠금 화면: 로그인 화면과 같은 틀, 그 위에 덮음 */
+.lock-screen { z-index: 50; }
+.lock-ic { width: 52px; height: 52px; border-radius: 26px; background: var(--fill); color: var(--sub); display: grid; place-items: center; margin-bottom: 4px; }
+.lock-ic svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.lock-screen .text-btn { height: 40px; padding: 0 10px; font-size: 15px; color: var(--primary-text); }
+.seg button:disabled { opacity: .4; }
 
 /* ---------- 시작 화면 (스플래시) — 세 앱 공통 순서 ----------
    1. 파란 원이 작게 시작해서 부드럽게 펼쳐짐 (튕기지 않음) 0 ~ 0.6초

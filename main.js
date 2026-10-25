@@ -1,4 +1,4 @@
-// AIN Todo 시작 v7: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
+// AIN Todo 시작 v8: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
 
 const monthTitle = document.getElementById('monthTitle');
 const todayBtn = document.getElementById('todayBtn');
@@ -103,6 +103,7 @@ function startSplash() {
   setTimeout(() => {
     splash.classList.add('hide');
     setTimeout(() => splash.remove(), 400);
+    lockStart(); // 잠금이 켜져 있으면 Face ID·지문 확인 창을 저절로 띄움
   }, 2000);
 }
 
