@@ -1,4 +1,4 @@
-// AIN Todo 공통 v6: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
+// AIN Todo 공통 v7: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
 
 const STORE_KEY = 'ainTodo';
 const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -34,7 +34,7 @@ const DEFAULT_CATEGORIES = [
 let state = {
   categories: DEFAULT_CATEGORIES,
   tasks: [],
-  // theme: light | dark | auto (기기마다), accent: blue | green | red (계정마다), calendarView: week | month
+  // theme: light | dark | auto (기기마다), accent: blue | green | red | yellow (계정마다), calendarView: week | month
   settings: { weekStart: 'mon', theme: 'auto', accent: 'blue', calendarView: 'week' }
 };
 
@@ -82,7 +82,7 @@ function applyTheme() {
   const root = document.documentElement;
   if (mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
   else root.removeAttribute('data-theme');
-  if (accent === 'green' || accent === 'red') root.setAttribute('data-accent', accent);
+  if (accent === 'green' || accent === 'red' || accent === 'yellow') root.setAttribute('data-accent', accent);
   else root.removeAttribute('data-accent');
 }
 
