@@ -21,7 +21,7 @@
   <script>
     // 새 버전 스스로 받기 (네 앱 공통): 켤 때 서버의 version.txt 숫자가 아래 APP_VERSION보다 크면
     // 새 화면 파일을 받아 한 번 새로고침. 올릴 때마다 두 숫자를 같이 올린다
-    const APP_VERSION = 3;
+    const APP_VERSION = 4;
     (function () {
       const t0 = Date.now();
       const key = 'ainTodo.updated'; // 같은 버전으로 두 번 새로고침하지 않게
@@ -37,7 +37,7 @@
         .catch(() => {}); // 인터넷이 안 되면 그냥 염
     })();
   </script>
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
   <!-- 시작 화면 (앱을 새로 열 때만, 약 2초): 파란 원이 펼쳐지고 → 체크가 그려짐 → 이름 → 색 점 4개 (세 앱 공통 순서) -->
@@ -56,9 +56,9 @@
     <header class="top">
       <h1 class="wordmark"><b>AIN</b> Todo</h1>
       <div class="top-right">
-        <button class="icon-btn" id="drawerBtn" type="button" aria-label="미완료 서랍">
+        <button class="icon-btn" id="drawerBtn" type="button" aria-label="서랍장">
           <span class="icon-circle">
-            <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10.5 6h3M10.5 12h3M10.5 18h3"/></svg>
             <span class="badge" id="overdueBadge" hidden></span>
           </span>
         </button>
@@ -175,15 +175,22 @@
     </div>
   </div>
 
-  <!-- 미완료 서랍 -->
+  <!-- 서랍장: 떠오른 일 적기, 날짜 없는 할 일, 오늘 완료, 밀린 일 -->
   <div class="overlay" id="drawerOverlay" hidden>
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
       <div class="sheet-top">
         <span></span>
-        <h2 id="drawerTitle">미완료 할 일</h2>
+        <h2 id="drawerTitle">서랍장</h2>
         <button class="sheet-btn strong" id="drawerClose" type="button">닫기</button>
       </div>
-      <div class="sheet-scroll" id="drawerList"></div>
+      <div class="sheet-scroll">
+        <form class="quick" id="quickForm" autocomplete="off">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <input id="quickInput" type="text" placeholder="떠오른 일 적기" aria-label="떠오른 일 적기" enterkeyhint="done">
+          <button class="small-btn" type="submit">추가</button>
+        </form>
+        <div class="d-secs" id="drawerList"></div>
+      </div>
     </div>
   </div>
 
@@ -286,15 +293,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
   <script src="calendar.js?v=4"></script>
   <script src="tasks.js?v=5"></script>
   <script src="sheet.js?v=8"></script>
-  <script src="drawer.js?v=1"></script>
+  <script src="drawer.js?v=2"></script>
   <script src="pick.js?v=1"></script>
   <script src="settings.js?v=3"></script>
   <script src="sync.js?v=3"></script>
   <script src="lock.js?v=2"></script>
-  <script src="main.js?v=9"></script>
+  <script src="main.js?v=10"></script>
 </body>
 </html>

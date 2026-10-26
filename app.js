@@ -1,4 +1,4 @@
-// AIN Todo 공통 v8: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
+// AIN Todo 공통 v9: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
 
 const STORE_KEY = 'ainTodo';
 const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -87,12 +87,17 @@ function applyTheme() {
   else root.removeAttribute('data-accent');
 }
 
-// 아직 하지 않았고, 넘기지도 않은 지난 할 일
+// 아직 하지 않았고, 넘기지도 않은 지난 할 일 (날짜 없는 할 일은 빼고)
 function isOverdue(t) {
-  return !t.done && !t.skipped && t.date < ui.today;
+  return !t.done && !t.skipped && !!t.date && t.date < ui.today;
 }
 
-// 아래에서 올라오는 창 열기·닫기 (설정, 미완료 서랍)
+// 서랍장에 적어 둔 날짜 없는 할 일 (아직 안 한 것)
+function isInbox(t) {
+  return !t.date && !t.done;
+}
+
+// 아래에서 올라오는 창 열기·닫기 (설정, 서랍장)
 function showOverlay(el) {
   el.hidden = false;
   document.body.classList.add('locked');

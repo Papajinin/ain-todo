@@ -1,4 +1,4 @@
-// AIN Todo 시작 v9: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
+// AIN Todo 시작 v10: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
 
 const monthTitle = document.getElementById('monthTitle');
 const todayBtn = document.getElementById('todayBtn');
@@ -10,9 +10,10 @@ function renderHeader() {
   monthTitle.textContent = `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
   todayBtn.hidden = ui.selected === ui.today;
 
-  const overdue = state.tasks.filter(isOverdue).length;
-  overdueBadge.hidden = overdue === 0;
-  overdueBadge.textContent = overdue > 99 ? '99+' : overdue;
+  // 서랍장 숫자: 날짜 없는 할 일 + 밀린 일
+  const n = state.tasks.filter(t => isInbox(t) || isOverdue(t)).length;
+  overdueBadge.hidden = n === 0;
+  overdueBadge.textContent = n > 99 ? '99+' : n;
 }
 
 // D-Day 핀: 완료하기 전까지 계속 표시, 가까운 순서
