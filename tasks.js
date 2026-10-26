@@ -1,4 +1,4 @@
-// AIN Todo 할 일 목록 v4: 완료 체크(체크 애니메이션), 메모 펼치기, PC 더블클릭 수정, 길게 눌러 수정 창 열기, 넘긴 할 일 표시
+// AIN Todo 할 일 목록 v5: 완료 체크(체크 애니메이션), 메모 펼치기, PC 더블클릭 수정, 길게 눌러 수정 창 열기, 넘긴 할 일 표시
 
 const listEl = document.getElementById('list');
 const dayTitle = document.getElementById('dayTitle');
@@ -12,6 +12,12 @@ let popTaskId = null; // 방금 완료한 할 일 (체크 애니메이션은 한
 const MEMO_SVG = '<svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>';
 
 function renderList() {
+  dayTitle.parentElement.hidden = picking(); // 골라 보기 중에는 날짜마다 제목이 따로 붙음
+  if (picking()) {
+    renderPickList();
+    focusEditInput();
+    return;
+  }
   const d = parseYmd(ui.selected);
   dayTitle.textContent = `${d.getMonth() + 1}월 ${d.getDate()}일 ${WEEK_NAMES[d.getDay()]}요일`;
 
@@ -24,19 +30,25 @@ function renderList() {
     return;
   }
   listEl.className = 'list';
-  listEl.innerHTML = tasks.map(t => {
-    const open = t.memo && ui.openMemos.has(t.id);
-    const text = ui.editingId === t.id
-      ? `<input class="t-input" id="editInput" type="text" value="${escapeHtml(t.title)}" aria-label="할 일 수정">`
-      : `<span class="t-text">${escapeHtml(t.title)}</span>`;
-    const skipped = t.skipped && !t.done;
-    return `<div class="task${t.done ? ' done' : ''}${skipped ? ' skipped' : ''}" data-id="${t.id}">
+  listEl.innerHTML = tasks.map(taskRow).join('');
+  focusEditInput();
+}
+
+// 할 일 한 줄 (하루 목록과 골라 보기 목록이 같이 씀)
+function taskRow(t) {
+  const open = t.memo && ui.openMemos.has(t.id);
+  const text = ui.editingId === t.id
+    ? `<input class="t-input" id="editInput" type="text" value="${escapeHtml(t.title)}" aria-label="할 일 수정">`
+    : `<span class="t-text">${escapeHtml(t.title)}</span>`;
+  const skipped = t.skipped && !t.done;
+  return `<div class="task${t.done ? ' done' : ''}${skipped ? ' skipped' : ''}" data-id="${t.id}">
       <button class="check-btn" type="button" aria-label="${t.done ? '완료 취소' : '완료'}"><span class="check${t.done && t.id === popTaskId ? ' pop' : ''}">${t.done ? CHECK_SVG : ''}</span></button>
       <span class="t-dot" style="background:${catColor(t.categoryId)}"></span>
       <div class="t-body">${text}${skipped ? '<span class="skip-tag">넘김</span>' : ''}${t.memo ? `<span class="memo-ic">${MEMO_SVG}</span>` : ''}</div>
     </div>${open ? `<div class="memo">${escapeHtml(t.memo)}</div>` : ''}`;
-  }).join('');
+}
 
+function focusEditInput() {
   const input = document.getElementById('editInput');
   if (input) {
     input.focus();

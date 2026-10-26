@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v20 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v21 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -158,12 +158,16 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
   touch-action: none; user-select: none; -webkit-user-select: none;
 }
 /* 가운데 '‹ 2026년 10월 ›', 오른쪽 '오늘' */
-.cal-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-bottom: 4px; }
+.cal-head { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; padding-bottom: 4px; }
 .cal-nav { grid-column: 2; display: flex; align-items: center; }
 .month { margin: 0; min-width: 104px; text-align: center; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .nav-btn { width: 44px; height: 44px; display: grid; place-items: center; color: var(--sub); }
 .nav-btn svg { width: 17px; height: 17px; stroke-width: 2.4; }
-.today-btn { grid-column: 3; justify-self: end; height: 44px; padding: 0 10px; font-size: 14px; color: var(--primary-text); }
+.today-btn { grid-column: 1; grid-row: 1; justify-self: start; height: 44px; padding: 0 10px; font-size: 14px; color: var(--primary-text); }
+/* 골라 보기 버튼 (월간 달력일 때만): 고르는 중이면 테마 색으로 채움 */
+.pick-btn { grid-column: 3; grid-row: 1; justify-self: end; height: 30px; padding: 0 8px; border-radius: 15px; font-size: 13px; white-space: nowrap; color: var(--primary-text); transition: transform var(--t) var(--ease), background-color var(--t) var(--ease); }
+.pick-btn.on { background: var(--primary); color: var(--on-primary); font-weight: 600; }
+.pick-btn:active { transform: scale(.95); transition-duration: var(--t-press); }
 .cal-labels, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
 .cal-labels { text-align: center; font-size: 13px; font-weight: 500; line-height: 18px; color: var(--sub); padding-bottom: 2px; }
 .cal-labels .sun { color: var(--c-red); }
@@ -486,3 +490,21 @@ body.locked { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .icon-btn, .nav-btn, .today-btn, .add-btn, .sheet-btn, .small-btn, .seg-thumb { transition: none; }
 }
+
+/* ---------- 골라 보기 ---------- */
+.pick-row { width: 100%; text-align: left; }
+.pick-name { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 16px; }
+.pick-dot { flex: none; display: inline-block; width: 8px; height: 8px; border-radius: 4px; }
+.pick-right { display: flex; align-items: center; gap: 10px; }
+.pick-n { font-size: 14px; color: var(--sub); font-variant-numeric: tabular-nums; }
+.pick-ck { width: 18px; height: 18px; color: var(--primary-text); }
+.pick-ck svg { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.list.picking { background: none; margin: 0; border-radius: 0; overflow: visible; }
+.pick-bar { margin: 14px 16px 0; display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 14px; padding: 10px 12px 10px 14px; }
+.pb-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pb-body b { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 15px; font-weight: 700; }
+.pb-cat { display: inline-flex; align-items: center; gap: 6px; }
+.pb-sub { font-size: 13px; color: var(--sub); font-variant-numeric: tabular-nums; }
+.pb-clear { flex: none; height: 32px; padding: 0 12px; border-radius: 16px; background: var(--fill); color: var(--primary-text); font-size: 14px; font-weight: 600; }
+.pick-day { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 56px); }
+.pick-empty { margin: 0; text-align: center; color: var(--sub); padding: 36px 0; }

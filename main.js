@@ -1,4 +1,4 @@
-// AIN Todo 시작 v8: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
+// AIN Todo 시작 v9: 헤더, D-Day 핀(길게 눌러 수정 창), 전체 그리기
 
 const monthTitle = document.getElementById('monthTitle');
 const todayBtn = document.getElementById('todayBtn');
@@ -73,6 +73,7 @@ function renderAll() {
   renderHeader();
   renderChips();
   renderCalendar(false);
+  renderPickBtn();
   renderList();
 }
 

@@ -1,4 +1,4 @@
-// AIN Todo 공통 v7: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
+// AIN Todo 공통 v8: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
 
 const STORE_KEY = 'ainTodo';
 const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -44,7 +44,8 @@ const ui = {
   selected: todayStr(),
   expanded: false,
   openMemos: new Set(),
-  editingId: null
+  editingId: null,
+  pick: [] // 골라 보기: 고른 카테고리 (월간에서만, 앱을 켤 때마다 비어 있음)
 };
 
 function loadState() {

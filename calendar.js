@@ -1,4 +1,4 @@
-// AIN Todo 캘린더 v2: 주간·월간 접고 펴기, 이전·다음 이동, 쓸어넘기기(손가락 따라 넘어감)
+// AIN Todo 캘린더 v3: 주간·월간 접고 펴기, 이전·다음 이동, 쓸어넘기기(손가락 따라 넘어감)
 
 const calEl = document.getElementById('cal');
 const calBody = document.getElementById('calBody');
@@ -40,6 +40,7 @@ function monthCells(selected) {
 function dotsByDate() {
   const map = {};
   state.tasks.forEach(t => {
+    if (picking() && !ui.pick.includes(t.categoryId)) return; // 골라 보기 중이면 고른 카테고리만
     const list = map[t.date] || (map[t.date] = []);
     if (!list.includes(t.categoryId)) list.push(t.categoryId);
   });
@@ -82,7 +83,13 @@ function toggleExpand(open) {
   const next = open === undefined ? !ui.expanded : open;
   if (next === ui.expanded || sliding) return;
   ui.expanded = next;
+  // 주간으로 접으면 골라 보기는 풀림 (골라 보기는 월간에서만)
+  if (!next && ui.pick.length) {
+    ui.pick = [];
+    renderList();
+  }
   renderCalendar(true);
+  renderPickBtn();
 }
 
 // 주간: 7일씩 / 월간: 한 달씩 (그 달에 오늘이 있으면 오늘, 아니면 1일 선택)
@@ -140,6 +147,7 @@ function snapBack() {
 function selectDate(str) {
   ui.selected = str;
   renderAll();
+  if (picking()) scrollToPickDay(str);
 }
 
 // ---------- 터치: 좌우는 손가락 따라 넘기기, 아래로 쓸면 펼치기, 위로 쓸면 접기 ----------

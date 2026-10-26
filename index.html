@@ -21,7 +21,7 @@
   <script>
     // 새 버전 스스로 받기 (네 앱 공통): 켤 때 서버의 version.txt 숫자가 아래 APP_VERSION보다 크면
     // 새 화면 파일을 받아 한 번 새로고침. 올릴 때마다 두 숫자를 같이 올린다
-    const APP_VERSION = 2;
+    const APP_VERSION = 3;
     (function () {
       const t0 = Date.now();
       const key = 'ainTodo.updated'; // 같은 버전으로 두 번 새로고침하지 않게
@@ -37,7 +37,7 @@
         .catch(() => {}); // 인터넷이 안 되면 그냥 염
     })();
   </script>
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
   <!-- 시작 화면 (앱을 새로 열 때만, 약 2초): 파란 원이 펼쳐지고 → 체크가 그려짐 → 이름 → 색 점 4개 (세 앱 공통 순서) -->
@@ -86,6 +86,7 @@
           </button>
         </div>
         <button class="today-btn" id="todayBtn" type="button" hidden>오늘</button>
+        <button class="pick-btn" id="pickBtn" type="button" hidden>골라 보기</button>
       </div>
       <div class="cal-labels" id="calLabels"></div>
       <div class="cal-body" id="calBody">
@@ -155,6 +156,21 @@
         <div class="group" id="deleteGroup" hidden>
           <button class="row danger" id="sheetDelete" type="button">삭제</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 골라 보기 창 (카테고리 여러 개 골라서 그 일정만) -->
+  <div class="overlay" id="pickOverlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pickTitle">
+      <div class="sheet-top">
+        <button class="sheet-btn" id="pickClearAll" type="button">모두 풀기</button>
+        <h2 id="pickTitle">골라 보기</h2>
+        <button class="sheet-btn strong" id="pickDone" type="button">완료</button>
+      </div>
+      <div class="sheet-scroll">
+        <div class="group" id="pickCats"></div>
+        <p class="hint">여러 개 고를 수 있어요. 고른 카테고리의 일정만 달력과 목록에 보여요.</p>
       </div>
     </div>
   </div>
@@ -270,14 +286,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=7"></script>
-  <script src="calendar.js?v=3"></script>
-  <script src="tasks.js?v=4"></script>
+  <script src="app.js?v=8"></script>
+  <script src="calendar.js?v=4"></script>
+  <script src="tasks.js?v=5"></script>
   <script src="sheet.js?v=8"></script>
   <script src="drawer.js?v=1"></script>
+  <script src="pick.js?v=1"></script>
   <script src="settings.js?v=3"></script>
   <script src="sync.js?v=3"></script>
   <script src="lock.js?v=2"></script>
-  <script src="main.js?v=8"></script>
+  <script src="main.js?v=9"></script>
 </body>
 </html>
