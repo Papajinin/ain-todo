@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v26 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v27 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -364,6 +364,7 @@ body.locked { overflow: hidden; }
 .i-body { flex-direction: column; gap: 2px; text-align: left; }
 .i-body .t-text { flex: none; }
 .i-sub { font-size: 13px; color: var(--sub); }
+.i-title { font-size: 16px; padding: 2px 0; } /* 16px: 아이폰 화면 확대 막기 */
 .i-pick { display: flex; flex-direction: column; gap: 10px; padding: 0 14px 12px 61px; }
 .i-pick .cat-chips { margin: 0 -14px 0 0; padding: 0 14px 0 0; }
 .i-pick .cat-chip { background: var(--fill); }

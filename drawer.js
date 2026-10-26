@@ -1,5 +1,5 @@
-// AIN Todo 서랍장 v2: 떠오른 일 적기(날짜 없는 할 일), 오늘 완료, 밀린 일
-//  - 할 일: 날짜·카테고리 없이 적어 둠 (회색 점). 누르면 카테고리와 날짜를 골라 캘린더로 보냄
+// AIN Todo 서랍장 v3: 떠오른 일 적기(날짜 없는 할 일), 오늘 완료, 밀린 일
+//  - 할 일: 날짜·카테고리 없이 적어 둠 (회색 점). 누르면 제목 고치기 + 카테고리와 날짜를 골라 캘린더로 보냄
 //  - 오늘 완료: 서랍장에서 체크한 할 일은 그날 하루 남겨 두고 다시 눌러 되돌릴 수 있음
 //  - 밀린 일: 지난 날짜에 안 한 할 일 — 오늘 하기, 날짜 변경, 넘기기, 삭제 (v1과 같음)
 
@@ -31,7 +31,9 @@ function inboxRow(t) {
   return `<div class="task${t.done ? ' done' : ''}" data-id="${t.id}">
       <button class="check-btn" type="button" data-act="check" aria-label="${t.done ? '완료 취소' : '완료'}"><span class="check${t.done && t.id === popTaskId ? ' pop' : ''}">${t.done ? CHECK_SVG : ''}</span></button>
       <span class="t-dot" style="background:var(--sub)"></span>
-      <button class="t-body i-body" type="button" data-act="open" aria-expanded="${open}"><span class="t-text">${escapeHtml(t.title)}</span>${t.done ? '' : '<span class="i-sub">누르면 날짜 정하기</span>'}</button>
+      ${open
+        ? `<div class="t-body"><input class="t-input i-title" type="text" value="${escapeHtml(t.title)}" aria-label="할 일 고치기" enterkeyhint="done"></div>`
+        : `<button class="t-body i-body" type="button" data-act="open" aria-expanded="false"><span class="t-text">${escapeHtml(t.title)}</span>${t.done ? '' : '<span class="i-sub">누르면 날짜 정하기</span>'}</button>`}
     </div>${pick}`;
 }
 
@@ -172,6 +174,21 @@ drawerList.addEventListener('click', e => {
   } else if (act === 'del') {
     deleteFromDrawer(t);
   }
+});
+
+// 펼친 할 일의 제목 고치기: 엔터나 다른 곳을 누르면 저장
+// (서랍장은 다시 그리지 않음: "캘린더로"를 바로 눌러도 그 누름이 사라지지 않게)
+drawerList.addEventListener('change', e => {
+  if (!e.target.classList.contains('i-title')) return;
+  const t = findTask(e.target.closest('.task').dataset.id);
+  const title = e.target.value.trim();
+  if (!t || !title) { if (t) e.target.value = t.title; return; }
+  t.title = title;
+  saveState();
+  renderAll();
+});
+drawerList.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.classList.contains('i-title')) e.target.blur();
 });
 
 document.getElementById('drawerClose').addEventListener('click', () => hideOverlay(drawerOverlay));
