@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v25 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v26 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -284,7 +284,7 @@ body.locked { overflow: hidden; }
   font: inherit; color: var(--fg); padding: 12px 14px;
 }
 .f-title { font-size: 16px; }
-.f-memo { font-size: 15px; resize: none; overflow: hidden; min-height: 44px; border-top: 0.5px solid var(--line); line-height: 1.4; }
+.f-memo { font-size: 16px; resize: none; overflow: hidden; min-height: 44px; border-top: 0.5px solid var(--line); line-height: 1.4; }
 .f-title::placeholder, .f-memo::placeholder, .cat-new input::placeholder { color: var(--sub); }
 
 /* 할 일 자동완성: 친 글자가 들어간 지난 할 일을 많이 쓴 순으로 (옆으로 밀어서 더 보기) — AIN Cost와 같은 모양 */
@@ -307,7 +307,7 @@ body.locked { overflow: hidden; }
 .cat-chip.add { color: var(--primary-text); }
 .cat-chip.add svg { width: 14px; height: 14px; stroke-width: 2.6; }
 .cat-new-row { display: flex; align-items: center; padding-right: 8px; }
-.cat-new input { flex: 1; font-size: 15px; }
+.cat-new input { flex: 1; font-size: 16px; } /* 16px보다 작으면 아이폰이 입력할 때 화면을 확대함 */
 .small-btn { flex: none; height: 32px; padding: 0 12px; border-radius: 8px; background: var(--primary); color: var(--on-primary); font-size: 14px; font-weight: 600; }
 .color-dots { display: flex; gap: 6px; padding: 4px 10px 12px; flex-wrap: wrap; }
 .color-dot { width: 36px; height: 36px; display: grid; place-items: center; }
@@ -355,7 +355,7 @@ body.locked { overflow: hidden; }
 /* ---------- 서랍장 ---------- */
 .quick { display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 8px 0 14px; background: var(--card); border-radius: 12px; }
 .quick svg { flex: none; width: 18px; height: 18px; color: var(--sub); }
-.quick input { flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--fg); background: none; border: 0; outline: none; padding: 0; }
+.quick input { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--fg); background: none; border: 0; outline: none; padding: 0; }
 .quick input::placeholder { color: var(--sub); }
 .d-secs { display: flex; flex-direction: column; gap: 18px; }
 .d-sec { display: flex; flex-direction: column; gap: 8px; }
