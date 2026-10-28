@@ -1,4 +1,4 @@
-// AIN Todo 할 일 목록 v5: 완료 체크(체크 애니메이션), 메모 펼치기, PC 더블클릭 수정, 길게 눌러 수정 창 열기, 넘긴 할 일 표시
+// AIN Todo 할 일 목록 v6: 날짜 제목에 공휴일 이름, 완료 체크(체크 애니메이션), 메모 펼치기, PC 더블클릭 수정, 길게 눌러 수정 창 열기, 넘긴 할 일 표시
 
 const listEl = document.getElementById('list');
 const dayTitle = document.getElementById('dayTitle');
@@ -18,8 +18,7 @@ function renderList() {
     focusEditInput();
     return;
   }
-  const d = parseYmd(ui.selected);
-  dayTitle.textContent = `${d.getMonth() + 1}월 ${d.getDate()}일 ${WEEK_NAMES[d.getDay()]}요일`;
+  dayTitle.innerHTML = dayTitleHtml(ui.selected);
 
   const tasks = state.tasks.filter(t => t.date === ui.selected);
   dayCount.textContent = tasks.length ? `${tasks.filter(t => t.done).length}/${tasks.length}` : '';

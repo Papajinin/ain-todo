@@ -1,4 +1,4 @@
-// AIN Todo 골라 보기 v1: 카테고리를 여러 개 골라서 그 일정만 보기 (AIN Cost "골라 보기"와 같은 방식)
+// AIN Todo 골라 보기 v2 (날짜 제목에 공휴일 이름): 카테고리를 여러 개 골라서 그 일정만 보기 (AIN Cost "골라 보기"와 같은 방식)
 //  - 월간 달력일 때만 "골라 보기" 버튼이 보임. 주간으로 접으면 풀림
 //  - 달력에는 고른 카테고리 색 점만, 아래에는 그 달의 고른 일정이 날짜별로
 //  - 날짜를 누르면 목록이 그날로 내려감. 달을 넘겨도 유지, 앱을 켜면 풀린 채로 시작
@@ -58,9 +58,8 @@ function renderPickList() {
   tasks.forEach(t => { (byDay[t.date] = byDay[t.date] || []).push(t); });
   listEl.innerHTML = bar + Object.keys(byDay).sort().map(date => {
     const list = byDay[date];
-    const d = parseYmd(date);
     return `<section class="pick-day" data-day="${date}">
-      <div class="day-head"><h2>${d.getMonth() + 1}월 ${d.getDate()}일 ${WEEK_NAMES[d.getDay()]}요일</h2><span>${list.filter(t => t.done).length}/${list.length}</span></div>
+      <div class="day-head"><h2>${dayTitleHtml(date)}</h2><span>${list.filter(t => t.done).length}/${list.length}</span></div>
       <div class="list">${list.map(taskRow).join('')}</div>
     </section>`;
   }).join('');

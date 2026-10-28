@@ -1,4 +1,4 @@
-// AIN Todo 공통 v9: 날짜 도우미, 저장소, 상태, 화면 모드·테마 색
+// AIN Todo 공통 v10: 날짜 도우미(공휴일 포함), 저장소, 상태, 화면 모드·테마 색
 
 const STORE_KEY = 'ainTodo';
 const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -6,6 +6,19 @@ const WEEK_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 // ---------- 날짜 ('YYYY-MM-DD' 문자열로 다룸) ----------
 function ymd(d) {
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+// 빨간 날: 일요일 또는 공휴일 (공휴일 목록은 holidays.js)
+function holidayName(s) {
+  return (typeof HOLIDAYS !== 'undefined' && HOLIDAYS[s]) || '';
+}
+function isRedDay(s) {
+  return parseYmd(s).getDay() === 0 || !!holidayName(s);
+}
+// 할 일 위 날짜 제목: '10월 9일 금요일' + 공휴일이면 빨간 이름
+function dayTitleHtml(s) {
+  const d = parseYmd(s);
+  const name = holidayName(s);
+  return `${d.getMonth() + 1}월 ${d.getDate()}일 ${WEEK_NAMES[d.getDay()]}요일` + (name ? ` <em class="holiday">${name}</em>` : '');
 }
 function parseYmd(s) {
   const [y, m, d] = s.split('-').map(Number);

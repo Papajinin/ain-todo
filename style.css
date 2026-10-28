@@ -1,4 +1,4 @@
-/* AIN Todo 스타일 v27 — 색·크기는 plan/design-guide.md를 따른다 */
+/* AIN Todo 스타일 v28 — 색·크기는 plan/design-guide.md를 따른다 */
 
 :root {
   --bg: #F2F2F7;
@@ -182,9 +182,13 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
   font-size: 15px; font-variant-numeric: tabular-nums;
 }
 .day.out .num { color: var(--sub); }
+.day.red .num { color: var(--c-red); } /* 일요일·공휴일 (앞뒤 달 날짜도) */
 .day.today .num { color: var(--primary-text); font-weight: 600; }
+.day.today.red .num { color: var(--c-red); }
 .day.pressing .num { background: var(--fill); }
-.day.sel .num { background: var(--primary); color: var(--on-primary); font-weight: 600; }
+/* 선택한 날: 연한 테마 색 동그라미 (테마 색 20%), 숫자는 원래 색 */
+.day.sel .num { background: var(--fill); background: color-mix(in srgb, var(--primary) 20%, var(--card)); color: var(--fg); font-weight: 600; }
+.day.sel.red .num { color: var(--c-red); }
 .dots { display: flex; gap: 3px; height: 5px; }
 .dot { width: 5px; height: 5px; border-radius: 3px; }
 
@@ -194,6 +198,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 /* ---------- 할 일 목록 ---------- */
 .day-head { display: flex; align-items: baseline; justify-content: space-between; padding: 18px 20px 8px; }
 .day-head h2 { margin: 0; font-size: 17px; font-weight: 700; }
+.day-head .holiday { font-style: normal; color: var(--c-red); }
 .day-head span { font-size: 14px; color: var(--sub); font-variant-numeric: tabular-nums; }
 
 .list { background: var(--card); margin: 0 16px; border-radius: 14px; overflow: hidden; }
